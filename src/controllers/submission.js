@@ -1,24 +1,45 @@
 const Submission = require('../models/submission')
+const Quiz = require('../models/quiz')
+const Question = require('../models/question')
 
 //Create a submission 
 const create = (req, res) => {
-    const {quiz_id, choices, no_of_correct, no_of_incorrect} = req.body
-    
-    const submission = new Submission({
-        quiz_id,
-        choices,
-        no_of_correct,
-        no_of_incorrect,
-        total_points : no_of_correct - no_of_incorrect
-    })
-    
-    submission.save()
-    .then(data => {
-        res.send({ data })
+    const {quiz_id, choices} = req.body
+    let no_of_correct = 0
+    let no_of_incorrect = 0
+
+    Quiz.findById(quiz_id)
+    .then(quiz => {
+        quiz.questions.forEach((question_id, index) => {
+            Question.findById(question_id)
+            .then(question => {
+                if (question.answer === choices[index]) {
+                    no_of_correct++
+                } else {
+                    no_of_incorrect++
+                }
+
+                if (index === quiz.questions.length - 1) {
+                    const submission = new Submission({
+                        quiz_id,
+                        choices,
+                        no_of_correct,
+                        no_of_incorrect,
+                        total_points : no_of_correct - no_of_incorrect
+                    })
+                    
+                    submission.save()
+                    .then(data => {
+                        res.send({ data })
+                    })
+                }
+            })
+        })
     })
     .catch(error => {
         res.status(500).send({ error })
     })
+    
 }
 
 //Delete a submission

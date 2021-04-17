@@ -10,8 +10,7 @@ const submissionSchema = mongoose.Schema({
         }
     },
     choices : {
-        type : Map,
-        of : String,
+        type : Array,
         required : true
     },
     no_of_correct : {
