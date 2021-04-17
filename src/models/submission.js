@@ -1,17 +1,29 @@
 const mongoose = require('mongoose')
 
 const submissionSchema = mongoose.Schema({
-    question_id : {
+    quiz_id : {
         type : mongoose.Schema.Types.ObjectId,
         required : true,
-        ref : 'Question'
+        ref : 'Quiz',
+        validate: {
+            validator : id => mongoose.model('Quiz').findById(id)
+        }
     },
-    user_choice : {
-        type : String,
+    choices : {
+        type : Map,
+        of : String,
         required : true
     },
-    is_correct : {
-        type : Boolean,
+    no_of_correct : {
+        type : Number,
+        required : true
+    },
+    no_of_incorrect : {
+        type : Number,
+        required : true
+    },
+    total_points : {
+        type : Number,
         required : true
     }
 },{

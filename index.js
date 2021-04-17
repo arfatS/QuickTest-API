@@ -15,8 +15,8 @@ app.use(express.urlencoded({extended : false}))
 //App routes
 app.use('/category', require('./src/routes/category'))
 app.use('/question', require('./src/routes/question'))
+app.use('/quiz', require('./src/routes/quiz'))
 app.use('/submission', require('./src/routes/submission'))
-
 
 
 app.listen(PORT, () => {

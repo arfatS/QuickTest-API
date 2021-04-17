@@ -4,7 +4,10 @@ const questionSchema = mongoose.Schema({
     category_id : {
         type : mongoose.Schema.Types.ObjectId,
         required : true,
-        ref : 'Category'
+        ref : 'Category',
+        validate: {
+            validator : id => mongoose.model('Category').findById(id)
+        }
     },
     body : {
         type : String,
@@ -21,12 +24,6 @@ const questionSchema = mongoose.Schema({
     }
 },{
     timestamps : true
-})
-
-questionSchema.virtual('submissions',{
-    ref : 'Question',
-    localField : '_id',
-    foreignField : 'question_id'
 })
 
 const Question = mongoose.model('Question', questionSchema)

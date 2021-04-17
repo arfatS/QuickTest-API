@@ -3,8 +3,8 @@ const router = express.Router()
 
 const submissionController = require('../controllers/submission')
 
-router.get('/', submissionController.index)
-router.post('/:id', submissionController.create)
+router.post('/', submissionController.create)
 router.delete('/:id', submissionController.remove)
+router.get('/quiz/:id', submissionController.findByQuiz)
 
 module.exports = router
