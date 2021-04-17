@@ -6,7 +6,7 @@ const submissionSchema = mongoose.Schema({
         required : true,
         ref : 'Question'
     },
-    choice : {
+    user_choice : {
         type : String,
         required : true
     },
@@ -14,6 +14,8 @@ const submissionSchema = mongoose.Schema({
         type : Boolean,
         required : true
     }
+},{
+    timestamps : true
 })
 
 const Submission = mongoose.model('Submission', submissionSchema)
