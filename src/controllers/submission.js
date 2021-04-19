@@ -1,6 +1,7 @@
 const Submission = require('../models/submission')
 const Quiz = require('../models/quiz')
 const Question = require('../models/question')
+const Ranking = require('../models/ranking')
 
 //Create a submission 
 const create = (req, res) => {
@@ -30,6 +31,7 @@ const create = (req, res) => {
                     
                     submission.save()
                     .then(data => {
+                        updateRanking(data)
                         res.send({ data })
                     })
                 }
@@ -72,7 +74,51 @@ const findByQuiz = (req, res) => {
     .catch(error => {
         res.status(500).send({ error })
     })
-} 
+}
+
+//Update Ranking with latest submission
+const updateRanking = (submission) => {
+    Quiz.findById(submission.quiz_id)
+    .then(quiz => {
+        const user_name = quiz.user_name
+        
+        Ranking.findOne({ user_name })
+        .then(ranking => {
+            if (ranking) {
+                let no_of_attempts = ranking.no_of_attempts + 1
+                let average_score = ((ranking.average_score * ranking.no_of_attempts) + submission.total_points) / (no_of_attempts)
+                let highest_score = ranking.highest_score
+                
+                console.log(`PrevScore : ${(ranking.average_score * ranking.no_of_attempts)} NewScore : ${(ranking.average_score * ranking.no_of_attempts) + submission.total_points}`)
+
+                if (submission.total_points > highest_score) {
+                    highest_score = submission.total_points
+                }
+                
+                Ranking.findByIdAndUpdate(ranking._id,{
+                    average_score,
+                    highest_score,
+                    no_of_attempts
+                })
+                .then(console.log)
+
+            } else {
+                const ranking = new Ranking({
+                    user_name,
+                    average_score : submission.total_points,
+                    highest_score : submission.total_points,
+                    no_of_attempts : 1
+                })
+
+                ranking.save()
+                .then(console.log)
+            }
+        })
+    })
+    .catch(error => {
+        res.status(500).send({error})
+    })
+}
 
 module.exports = {
     create,

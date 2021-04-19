@@ -17,6 +17,7 @@ app.use('/category', require('./src/routes/category'))
 app.use('/question', require('./src/routes/question'))
 app.use('/quiz', require('./src/routes/quiz'))
 app.use('/submission', require('./src/routes/submission'))
+app.use('/ranking', require('./src/routes/ranking'))
 
 
 app.listen(PORT, () => {

@@ -32,16 +32,19 @@ const create = (req, res) => {
                     categories,
                     questions
                 })
-            
+                
                 quiz.save()
                 .then(data => {
                     res.send({ data })
+                })
+                .catch(error => {
+                    res.status(500).send({ error })
                 })
             }
         })
         .catch(error => {
             res.status(500).send({ error })
-        })      
+        })  
     })
 
 }
